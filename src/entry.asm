@@ -1,21 +1,21 @@
 BITS 16
 
-SECTION .data
 
+
+SECTION .data
 db 0x56, 0x78, 0xBB
 
 SECTION .text
-
 mov ah, 0x0e
-mov al, 'H'
+mov al, 'Y'
 int 0x10
-mov ah, 0x0e
-mov al, 'i'
+mov al, 'E'
 int 0x10
-mov ah, 0x0e
-mov al, '!'
+mov al, 'S'
 int 0x10
-
-
+jmp $
 db 0x12, 0x34, 0xAA
+
+; SECTION .text
+; db 'h'
 

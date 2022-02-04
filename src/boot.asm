@@ -1,7 +1,14 @@
-[BITS 16]
+BITS 16
 SECTION .bootloader
 
-; this lets the user know that the bootloader has been loaded properly
+;
+; CONSTANTS: this has all of the constants
+;
+MEMKERNELLOC equ 0x1000
+
+;
+; NOTIFY: this lets the user know that the bootloader has been loaded properly
+;
 mov ah, 0x0e
 mov al, 'H'
 int 0x10
@@ -12,7 +19,36 @@ mov ah, 0x0e
 mov al, '!'
 int 0x10
 
-jmp readnextDisk
+;
+; DISK: read the disk
+;
+;reset the disk
+mov ah, 0
+int 0x13
+; memory address
+mov ax, 0        ; this is here because you cannot move directly to a segment register
+mov es, ax
+mov bx, MEMKERNELLOC
+; cylinder, head, sector
+mov ch, 0
+mov dh, 0
+mov cl, 0x02
+; mode, num sectors
+mov ah, 0x02
+mov al, 0x02
+; execute and check for errors
+int 0x13
+jc error
+
+
+;
+; RUN: run the new code
+;
+; jump to new code dword = define word
+jmp dword 0x0:MEMKERNELLOC
+
+
+; error for if the disk failed to read
 error:
 mov ah, 0x0e
 mov al, 'N'
@@ -21,28 +57,8 @@ mov al, 'o'
 int 0x10
 mov al, '!'
 int 0x10
+jmp $
 
-
-
-readnextDisk:
-;reset the disk
-mov ah, 0
-int 0x13
-; read from disk
-mov ah, 0x2        ; read mode
-mov al, 15        ; number of sectors to read
-mov ch, 0x0        ; cylinder
-mov dh, 0x0        ; head
-mov dl, 0x0        ; drive
-mov cl, 0x2        ; sector
-mov ax, 0x0
-mov bx, 0x1000       ; address to be loaded into
-int 0x13           ; perform the action
-jc error           ; panic if it fails
-
-
-; jump to new code
-jmp dword 0x8:0x1000
 
 times 510-($-$$) db 0 ; pad the file with zeros until the 510 byte
 dw 0xaa55             ; this is the magic boot number
