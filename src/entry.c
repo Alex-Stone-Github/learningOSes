@@ -2,6 +2,9 @@
 The data segment does not work look watch.
 */
 
+#define WIDTH 80
+#define HEIGHT 25
+
 unsigned char * const FRAMEBUFFER1 = (unsigned char*)0xb8000;
 unsigned char * FRAMEBUFFER2 = (unsigned char*)0xb8000;
 
@@ -27,10 +30,18 @@ enum vga_color {
 int tobgcolor(int);
 
 void entry() {
-    FRAMEBUFFER1[2] = 'C';
-    FRAMEBUFFER1[3] = tobgcolor(VGA_COLOR_GREEN);
-    FRAMEBUFFER2[4] = '!';
-    FRAMEBUFFER1[5] = tobgcolor(VGA_COLOR_LIGHT_MAGENTA);
+    // FRAMEBUFFER1[2] = 'C';
+    // FRAMEBUFFER1[3] = tobgcolor(VGA_COLOR_GREEN);
+    // FRAMEBUFFER2[4] = '!';
+    // FRAMEBUFFER1[5] = tobgcolor(VGA_COLOR_LIGHT_MAGENTA);
+    for (unsigned int i = 0; i < WIDTH * HEIGHT * 2; i++) {
+        if (i % 2 == 1) {
+            FRAMEBUFFER1[i] = tobgcolor(VGA_COLOR_MAGENTA)|VGA_COLOR_WHITE;
+        }
+        else {
+            FRAMEBUFFER1[i] = '.';
+        }
+    }
 }
 
 int tobgcolor(int color) {
