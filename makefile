@@ -8,6 +8,9 @@ bin/os.img: build/boot.o build/entry.o
 build/%.o: src/%.asm
 	nasm -f elf $^ -o $@
 
+build/%.o: src/%.c
+	gcc -m32 -static -nostdlib -nolibc -g -fpic $^ -o $@
+
 clean:
 	rm bin/* build/*
 
