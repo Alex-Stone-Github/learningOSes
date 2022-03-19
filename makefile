@@ -9,7 +9,7 @@ build/%.o: src/%.asm
 	nasm -f elf $^ -o $@
 
 build/%.o: src/%.c
-	gcc -m32 -static -nostdlib -nolibc -g -fpic $^ -o $@
+	gcc -m32 -static -nostdlib -nolibc -g $^ -o $@
 
 clean:
 	rm bin/* build/*

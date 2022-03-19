@@ -6,7 +6,6 @@ The data segment does not work look watch.
 #define HEIGHT 25
 
 unsigned char * const FRAMEBUFFER1 = (unsigned char*)0xb8000;
-unsigned char * FRAMEBUFFER2 = (unsigned char*)0xb8000;
 
 enum vga_color {
 	VGA_COLOR_BLACK = 0,
@@ -29,21 +28,25 @@ enum vga_color {
 
 int tobgcolor(int);
 
+const int a = 3;
+
 void entry() {
-    // FRAMEBUFFER1[2] = 'C';
-    // FRAMEBUFFER1[3] = tobgcolor(VGA_COLOR_GREEN);
-    // FRAMEBUFFER2[4] = '!';
-    // FRAMEBUFFER1[5] = tobgcolor(VGA_COLOR_LIGHT_MAGENTA);
+    unsigned int counter = 0;
     for (unsigned int i = 0; i < WIDTH * HEIGHT * 2; i++) {
+        counter ++;
         if (i % 2 == 1) {
-            FRAMEBUFFER1[i] = tobgcolor(VGA_COLOR_MAGENTA)|VGA_COLOR_WHITE;
+            if (counter % a == 0) {
+                FRAMEBUFFER1[i] = tobgcolor(VGA_COLOR_MAGENTA)|VGA_COLOR_WHITE;
+            }
+            else {
+                FRAMEBUFFER1[i] = tobgcolor(VGA_COLOR_LIGHT_GREEN);
+            }
         }
         else {
-            FRAMEBUFFER1[i] = '.';
+            FRAMEBUFFER1[i] = ' ';
         }
     }
 }
-
 int tobgcolor(int color) {
     return color << 4;
 }
